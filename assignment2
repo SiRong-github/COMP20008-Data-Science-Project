@@ -1,0 +1,96 @@
+#libraries
+
+import numpy as np
+import pandas as pd
+from matplotlib import pyplot as plt
+import csv
+import re
+import os
+from numpy import arange
+import seaborn as sns
+import requests
+from bs4 import BeautifulSoup
+
+
+#variables for datasets
+covid_data = "COVID19 Data Viz Postcode data - postcode.csv"
+jobkeeper_data = "jobkeeperdata-20210625_1.xlsx"
+postcode_data = "https://www.worldpostalcodes.org/l1/en/au/australia/list/r1/list-of-postcodes-in-victoria"
+
+def extract():
+  
+  #covid_data
+  
+  header = ["postcode", "cases"]
+    
+  covid = pd.read_csv(covid_data)  
+  postcode_covid = covid["postcode"]
+  cases_covid = covid["cases"]
+
+  
+  #jobkeeper_data
+  
+  header = ["postcode", "cases"]
+    
+  jobkeeper = pd.read_csv(jobkeeper_data)  
+  jobkeeper_covid = jobkeeper["postcode"]
+  
+  
+  #Extension - First Phase (2020)
+  jobkeeper_apr = jobkeeper["April Application Count"]
+  jobkeeper_may = jobkeeper["May Application Count"]
+  jobkeeper_jun = jobkeeper["June Application Count"]
+  jobkeeper_jul = jobkeeper["July Application Count"]
+  jobkeeper_aug = jobkeeper["August Application Count"]
+  jobkeeper_sep = jobkeeper["September Application Count"]
+
+  #Extension - First Quarter (2020)
+  jobkeeper_oct = jobkeeper["October Application Count"]
+  jobkeeper_nov = jobkeeper["November Application Count"]  
+  jobkeeper_dec = jobkeeper["December Application Count"]    
+  
+  #Extension - Second Quarter (2021)
+  jobkeeper_jan = jobkeeper["January Application Count"]
+  jobkeeper_feb = jobkeeper["February Application Count"]
+  jobkeeper_mar = jobkeeper["March Application Count"]
+  
+  jobkeeper 
+  postcode, add application counts (average)
+  
+  #postcode_data 
+  pd.read_html()
+  
+  #specifying the page to download for postcodes
+  page = requests.get(postcode_data)
+  soup = BeautifulSoup(page.text, "html.parser")
+  
+  #locating section in postcode 
+  section = soup.find(id = "List of All Postcodes in Victoria September 2021")
+  results = section.findNext("table").findNext("table")
+  
+  #iterating thru all rows in the table
+  rows = results.find_all("tr")
+  
+  i = 0
+  records = []
+  
+  for row in rows[2:]:
+      cells = row.find_all("td")
+      record = []
+
+      postcode_code = int(unicodedata.normalize("NFKD", cells[0].text.strip()))
+      record.append(int(postcode_code))
+
+      postcode_name = unicodedata.normalize("NFKD", cells[1].text.strip())
+      record.append(postcode_name)
+      
+      i += 1
+
+  column_names = ["postcode code", "postcode name"]
+  postcode_with_name_data = pd.DataFrame(records, columns = column_names) 
+  
+  return postcode_covid, cases_covid
+  
+def data_wrangling():
+
+  return 
