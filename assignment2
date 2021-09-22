@@ -54,8 +54,7 @@ def extract():
   jobkeeper_feb = jobkeeper["February Application Count"]
   jobkeeper_mar = jobkeeper["March Application Count"]
   
-  jobkeeper 
-  postcode, add application counts (average)
+  #postcode, add application counts (average)
   
   #postcode_data 
   pd.read_html()
