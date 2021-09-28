@@ -3,6 +3,8 @@
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
+import openpyxl
+import unicodedata
 import csv
 import re
 import os
@@ -41,10 +43,56 @@ def extract_jobkeeper():
     #variables for each sheet
     first_phase = jobkeeper["First Phase"]
     first_quarter = jobkeeper["Extension - First Quarter"]
-    second_quarter = jobkeeper["Extension - Second Quarter"]    
+    second_quarter = jobkeeper["Extension - Second Quarter"]
+
+    first_phase_df = pd.DataFrame()
+    first_quarter_df = pd.DataFrame()
+    second_quarter_df = pd.DataFrame()
+
+    first_phase_postcodes = []
+    first_quarter_postcodes = []
+    second_quarter_postcodes = []
+        
+    for cell in first_phase['A']:
+        first_phase_postcodes.append(cell.value)
+
+    for cell in first_quarter['A']:
+        first_quarter_postcodes.append(cell.value)
     
+    for cell in second_quarter['A']:
+        second_quarter_postcodes.append(cell.value)
+
+    columns = ['B', 'C', 'D', 'E', 'F', 'G']
+
+    for column in columns:
+        temp = []
+        
+        for cell in first_phase[column]:
+            temp.append(cell.value)
     
+        first_phase_df[temp[1]] = temp[2:-2]
+
+    first_phase_df.index = first_phase_postcodes[2:-2]
     
+    for column in columns[:3]:
+        temp = []
+        
+        for cell in first_quarter[column]:
+            temp.append(cell.value)
+    
+        first_quarter_df[temp[1]] = temp[2:-2]
+
+    first_quarter_df.index = first_quarter_postcodes[2:-2]
+    
+    for column in columns[:3]:
+        temp = []
+        
+        for cell in second_quarter[column]:
+            temp.append(cell.value)
+    
+        second_quarter_df[temp[1]] = temp[2:-2]
+    
+    second_quarter_df.index = second_quarter_postcodes[2:-2]
     
     #Extension - First Phase (2020)
 
@@ -112,7 +160,7 @@ def extract_postcode():
     for row in rows[2:]:
         cell = row.find_all("td")     
         #removing ads
-        if re.search("ad", str(cell)) == None:
+        if re.search("adsbygoogle", str(cell)) == None:
             cells.append(cell)
     
     #iterating thru each cell
@@ -133,6 +181,10 @@ def extract_postcode():
     
     #creating dataframe
     column_names = ["postcode code", "postcode name"]
-    postcode_with_name_data = pd.DataFrame(records, columns = column_names) 
+    postcode_with_name_data = pd.DataFrame(records, columns=column_names) 
+
+    print(postcode_with_name_data)
     
     return
+
+extract_jobkeeper()
