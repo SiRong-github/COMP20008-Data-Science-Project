@@ -13,7 +13,6 @@ import seaborn as sns
 import requests
 from bs4 import BeautifulSoup
 
-
 #variables for datasets
 
 covid_data = "COVID19 Data Viz Postcode data - postcode.csv"
@@ -30,7 +29,6 @@ def extract_covid():
     cases_covid = covid["cases"]
     
     return
-
 
 def extract_jobkeeper():
 
@@ -117,9 +115,6 @@ def extract_jobkeeper():
             #aug_jobkeeper = first_phase["August Application Count"]
             #sep_jobkeeper = first_phase["September Application Count"]
 
-    
-    
-    
     #Extension - First Quarter (2020)
 
     #first_quarter_postcode = first_quarter["Postcode"]    
@@ -182,9 +177,5 @@ def extract_postcode():
     #creating dataframe
     column_names = ["postcode code", "postcode name"]
     postcode_with_name_data = pd.DataFrame(records, columns=column_names) 
-
-    print(postcode_with_name_data)
     
     return
-
-extract_jobkeeper()
