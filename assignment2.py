@@ -13,6 +13,7 @@ from bs4 import BeautifulSoup
 
 
 #variables for datasets
+
 covid_data = "COVID19 Data Viz Postcode data - postcode.csv"
 jobkeeper_data = "jobkeeperdata-20210625_1.xlsx"
 postcode_data = "https://www.worldpostalcodes.org/l1/en/au/australia/list/r1/list-of-postcodes-in-victoria"
