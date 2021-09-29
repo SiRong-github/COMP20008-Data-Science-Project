@@ -28,7 +28,11 @@ def extract_covid():
     postcode_covid = covid["postcode"]
     cases_covid = covid["cases"]
     
-    return
+    #concatenate everything onto one dataframe
+    covid_pd = pd.concat([postcode_covid, cases_covid, population_covid], axis=1)
+    covid_pd.drop([702,703], inplace = True)
+    
+    return covid_pd
 
 def extract_jobkeeper():
 
