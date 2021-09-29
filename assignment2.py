@@ -97,49 +97,10 @@ def extract_jobkeeper():
     
     second_quarter_df.index = second_quarter_postcodes[2:-2]
     all_phases_df = pd.concat([first_phase_df, first_quarter_df, second_quarter_df], axis=1)
-    all_phases_df = all_phases_df.drop(all_phases_df.index[:649])
-    all_phases_df = all_phases_df.drop(all_phases_df.index[663:])
-    
-    #Extension - First Phase (2020)
-
-    #IMPORTANT
-    #we can prolly use regex for the value after None to be postcode and before None to be Count (see "THIS WORKS" below)
-    # then we can directly go w/ the formula according to the documentation for openpyxl    
-    # we'll basically just reuse the code for First and Second Quarter
-    
-            #THIS WORKS
-            #for row in first_phase.values:
-            #    for value in row:
-            #        print(value)    
-
-
-            #THIS DOESN'T WORK
-            #first_phase_postcode = first_phase["Postcode"]
-
-            #apr_jobkeeper = first_phase["April Application Count"]
-            #may_jobkeeper = first_phase["May Application Count"]
-            #jun_jobkeeper = first_phase["June Application Count"]
-            #jul_jobkeeper = first_phase["July Application Count"]
-            #aug_jobkeeper = first_phase["August Application Count"]
-            #sep_jobkeeper = first_phase["September Application Count"]
-
-    #Extension - First Quarter (2020)
-
-    #first_quarter_postcode = first_quarter["Postcode"]    
-    
-    #oct_jobkeeper = first_quarter["October Application Count"]
-    #nov_jobkeeper = first_quarter["November Application Count"]  
-    #dec_jobkeeper = first_quarter["December Application Count"]    
+    all_phases_df.drop(all_phases_df.index[:649])
+    all_phases_df.drop(all_phases_df.index[663:])
   
-    #Extension - Second Quarter (2021)
-    
-    #second_quarter_postcode = second_quarter["Postcode"]
-    
-    #jan_jobkeeper = second_quarter["January Application Count"]
-    #feb_jobkeeper = second_quarter["February Application Count"]
-    #mar_jobkeeper = second_quarter["March Application Count"]
-  
-    return
+    return all_phases_df
 
 
 def extract_postcode():
@@ -186,4 +147,4 @@ def extract_postcode():
     column_names = ["postcode code", "postcode name"]
     postcode_with_name_data = pd.DataFrame(records, columns=column_names) 
     
-    return
+    return postcode_with_name_data
