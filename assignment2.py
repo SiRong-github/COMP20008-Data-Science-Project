@@ -96,6 +96,8 @@ def extract_jobkeeper():
     
     second_quarter_df.index = second_quarter_postcodes[2:-2]
     all_phases_df = pd.concat([first_phase_df, first_quarter_df, second_quarter_df], axis=1)
+    all_phases_df = all_phases_df.drop(all_phases_df.index[:649])
+    all_phases_df = all_phases_df.drop(all_phases_df.index[663:])
     
     #Extension - First Phase (2020)
 
