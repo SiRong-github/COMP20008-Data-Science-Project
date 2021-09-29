@@ -99,8 +99,9 @@ def extract_jobkeeper():
     all_phases_df = pd.concat([first_phase_df, first_quarter_df, second_quarter_df], axis=1)
     all_phases_df.drop(all_phases_df.index[:649])
     all_phases_df.drop(all_phases_df.index[663:])
-  
-    return all_phases_df
+    all_phases_mean = all_phases_df.mean(axis=1)
+    
+    return all_phases_mean
 
 
 def extract_postcode():
