@@ -102,7 +102,7 @@ def extract_jobkeeper():
     all_phases_mean = all_phases_df.mean(axis=1)
     all_phases_mean_df = pd.DataFrame({'postcode':all_phases_mean.index, 'application count':all_phases_mean.values})
     
-    return all_phases_mean
+    return all_phases_mean_df
 
 
 def extract_postcode():
@@ -150,3 +150,17 @@ def extract_postcode():
     postcode_with_name_data = pd.DataFrame(records, columns=column_names) 
     
     return postcode_with_name_data
+  
+def combination():
+    covid = extract_covid()
+    jobkeeper = extract_jobkeeper()        
+    postcode = extract_postcode()
+    
+    covid["postcode"] = covid["postcode"].astype(int)
+    jobkeeper["postcode"] = jobkeeper["postcode"].astype(int)
+    postcode["postcode"] = postcode["postcode"].astype(int)
+    
+    com1 = pd.merge(postcode, covid, on='postcode')
+    combination = pd.merge(com1, jobkeeper, on='postcode')
+
+    return combination
