@@ -27,6 +27,7 @@ def extract_covid():
     #variables for required columns
     postcode_covid = covid["postcode"]
     cases_covid = covid["cases"]
+    population_covid = covid["population"]
     
     #concatenate everything onto one dataframe
     covid_pd = pd.concat([postcode_covid, cases_covid, population_covid], axis=1)
