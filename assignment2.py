@@ -100,6 +100,7 @@ def extract_jobkeeper():
     all_phases_df.drop(all_phases_df.index[:649])
     all_phases_df.drop(all_phases_df.index[663:])
     all_phases_mean = all_phases_df.mean(axis=1)
+    all_phases_mean_df = pd.DataFrame({'postcode':all_phases_mean.index, 'application count':all_phases_mean.values})
     
     return all_phases_mean
 
@@ -145,7 +146,7 @@ def extract_postcode():
         records.append(record)
     
     #creating dataframe
-    column_names = ["postcode code", "postcode name"]
+    column_names = ["postcode", "postcode name"]
     postcode_with_name_data = pd.DataFrame(records, columns=column_names) 
     
     return postcode_with_name_data
