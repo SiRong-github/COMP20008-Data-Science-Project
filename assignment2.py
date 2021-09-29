@@ -1,7 +1,5 @@
 #libraries
 
-#!pip install openpyxl
-
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
@@ -30,13 +28,12 @@ def extract_covid():
     postcode_covid = covid["postcode"]
     cases_covid = covid["cases"]
     
-    return postcode_covid, cases_covid
+    return
 
 def extract_jobkeeper():
 
     #IMPORTANT
     # https://stackoverflow.com/questions/51478413/select-a-column-by-its-name-openpyxl
-    # See also https://stackoverflow.com/questions/34509198/no-module-named-openpyxl-python-3-4-ubuntu
 
     #jobkeeper_data
     jobkeeper = openpyxl.load_workbook(jobkeeper_data)
@@ -95,8 +92,6 @@ def extract_jobkeeper():
     
     second_quarter_df.index = second_quarter_postcodes[2:-2]
     
-    all_phases_df = pd.concat([first_phase_df, first_quarter_df, second_quarter_df], axis=1)
-    
     #Extension - First Phase (2020)
 
     #IMPORTANT
@@ -136,7 +131,8 @@ def extract_jobkeeper():
     #feb_jobkeeper = second_quarter["February Application Count"]
     #mar_jobkeeper = second_quarter["March Application Count"]
   
-    return all_phases_df
+    return
+
 
 def extract_postcode():
 
