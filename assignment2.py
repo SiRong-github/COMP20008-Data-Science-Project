@@ -144,11 +144,15 @@ def combination():
     covid["postcode"] = covid["postcode"].astype(int)
     jobkeeper["postcode"] = jobkeeper["postcode"].astype(int)
     postcode["postcode"] = postcode["postcode"].astype(int)
-    #using merge to combine all three dataframes by postcode
+    #using merge to combine all three dataframes by postcode number
     com1 = pd.merge(postcode, covid, on='postcode')
     combination = pd.merge(com1, jobkeeper, on='postcode')
+    #sorting and collating the data by suburb
+    sorted_by_suburb = combination.groupby(['postcode name']).sum()
+    sorted_by_suburb['cases proportion'] = (sorted_by_suburb['cases']/sorted_by_suburb['population'])*100
+    sorted_by_suburb['application proportion'] = (sorted_by_suburb['application count']/sorted_by_suburb['population'])*100
 
-    return combination
+    return sorted_by_suburb
 
 #Calling for function to start data wrangling
 x = combination()
