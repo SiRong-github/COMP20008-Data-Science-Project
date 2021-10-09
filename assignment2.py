@@ -1,3 +1,8 @@
+#if not installed
+# !pip install openpyxl
+# !pip install plotly
+# !pip install statsmodels
+
 #libraries
 import numpy as np
 import pandas as pd
@@ -12,6 +17,7 @@ import seaborn as sns
 import requests
 from bs4 import BeautifulSoup
 import plotly.express as px 
+import statsmodels.api as sm
 
 #variables for datasets
 covid_data = "COVID19 Data Viz Postcode data - postcode.csv"
@@ -156,8 +162,25 @@ def combination():
 
 #Calling for function to start data wrangling
 x = combination()
-new  = pd.merge(x, land, left_on = 'postcode name', right_on= 'SUBURB')
+# new  = pd.merge(x, land, left_on = 'postcode name', right_on= 'SUBURB')
 
+def scatterplot():
+    plt.figure(figsize=(15,5))
+    plt.grid(True)
+    sns.scatterplot(x='postcode name',y='cases proportion',data=x)
+    plt.setp(plt.xticks()[1], rotation=90)
+
+    plt.figure(figsize=(15,5))
+    plt.grid(True)
+    sns.scatterplot(x='postcode name',y='application proportion',data=x)
+    plt.setp(plt.xticks()[1], rotation=90)
+    
+    plt.figure(figsize=(15,5))
+    plt.grid(True)
+    sns.regplot(x='cases proportion',y='application proportion',data=x, robust=True);
+    # weak increasing
+    
+    return None
 
 # plotly 
 fig = px.line(x, x='postcode', y='cases')
