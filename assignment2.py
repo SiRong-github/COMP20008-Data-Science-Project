@@ -182,6 +182,23 @@ def scatterplot():
     
     return None
 
+def regression_results():
+    #OLS regression for cases and application proportion
+    cases_prop = x['cases proportion']
+    appli_prop = x['application proportion']
+    results = sm.OLS(appli_prop, cases_prop).fit()
+    print("OLS Regression Results for Cases and Application proportion:")
+    print(results.summary())
+    
+    #OLS regression for cases proportion and population
+    cases_prop = x['cases proportion']
+    population = x['population']
+    results = sm.OLS(population, cases_prop).fit()
+    print("\nOLS Regression Results for Cases proportion and population:")
+    print(results.summary())
+    
+    return None
+
 # plotly 
 fig = px.line(x, x='postcode', y='cases')
 
