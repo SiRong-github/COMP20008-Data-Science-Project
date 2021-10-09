@@ -14,12 +14,13 @@ from bs4 import BeautifulSoup
 import plotly.express as px 
 
 #variables for datasets
-
 covid_data = "COVID19 Data Viz Postcode data - postcode.csv"
 jobkeeper_data = "jobkeeperdata-20210625_1.xlsx"
 postcode_data = "https://www.worldpostalcodes.org/l1/en/au/australia/list/r1/list-of-postcodes-in-victoria"
 
 def extract_covid():
+    '''Extracting number of covid cases by postcode from csv'''
+    
     #covid_data     
     covid = pd.read_csv(covid_data)  
     #variables for required columns
@@ -32,20 +33,18 @@ def extract_covid():
     return covid_pd
 
 
-
-
-
-
 def extract_jobkeeper():
+    '''Extracting number of jobkeeper application count by postcode from excel worksheet'''
     #IMPORTANT
     # https://stackoverflow.com/questions/51478413/select-a-column-by-its-name-openpyxl
+    
     #jobkeeper_data
     jobkeeper = openpyxl.load_workbook(jobkeeper_data)
     #variables for each sheet
     first_phase = jobkeeper["First Phase"]
     first_quarter = jobkeeper["Extension - First Quarter"]
     second_quarter = jobkeeper["Extension - Second Quarter"]
-
+    
     first_phase_df = pd.DataFrame()
     first_quarter_df = pd.DataFrame()
     second_quarter_df = pd.DataFrame()
@@ -53,7 +52,7 @@ def extract_jobkeeper():
     first_phase_postcodes = []
     first_quarter_postcodes = []
     second_quarter_postcodes = []
-        
+    #appending application counts from each sheet respectively    
     for cell in first_phase['A']:
         first_phase_postcodes.append(cell.value)
 
@@ -70,25 +69,22 @@ def extract_jobkeeper():
         for cell in first_phase[column]:
             temp.append(cell.value)
         first_phase_df[temp[1]] = temp[2:-2]
-
     first_phase_df.index = first_phase_postcodes[2:-2]
+    
     for column in columns[:3]:
         temp = []
         for cell in first_quarter[column]:
             temp.append(cell.value)
         first_quarter_df[temp[1]] = temp[2:-2]
-
     first_quarter_df.index = first_quarter_postcodes[2:-2]
     
     for column in columns[:3]:
         temp = []
-        
         for cell in second_quarter[column]:
             temp.append(cell.value)
-    
         second_quarter_df[temp[1]] = temp[2:-2]
-    
     second_quarter_df.index = second_quarter_postcodes[2:-2]
+    #concatenate everything onto one dataframe
     all_phases_df = pd.concat([first_phase_df, first_quarter_df, second_quarter_df], axis=1)
     all_phases_df = all_phases_df.drop(all_phases_df.index[:649])
     all_phases_df = all_phases_df.drop(all_phases_df.index[663:])
@@ -99,41 +95,36 @@ def extract_jobkeeper():
 
 
 def extract_postcode():
+    '''Extracting postcode and corresponding name of postcode area from website'''
     #IMPORTANT    
     # btw, we can't use read_html since there's a 403 error (need access)
+    
     #postcode_data 
     #specifying the page to download for postcodes
     page = requests.get(postcode_data)
     soup = BeautifulSoup(page.text, "html.parser")
     table = soup.find("table")
-  
     #variables
     rows = table.find_all("tr")
     cells = []
     records = []
     
-    #iterating thru all rows in the table
+    #iterating through all rows in the table
     for row in rows[2:]:
         cell = row.find_all("td")     
         #removing ads
         if re.search("adsbygoogle", str(cell)) == None:
             cells.append(cell)
     
-    #iterating thru each cell
+    #iterating through each cell to join each code and name
     for i in range(len(cells)):
-        #to join each code and name 
         record = []
-
-
-
         #code
         postcode_code = unicodedata.normalize("NFKD", cells[i][0].text.strip())
         record.append(postcode_code)
-  
         #name
         postcode_name = unicodedata.normalize("NFKD", cells[i][1].text.strip())
         record.append(postcode_name)
-      
         #joining all lists containing code and name
         records.append(record)
     
@@ -144,20 +135,22 @@ def extract_postcode():
     return postcode_with_name_data
   
 def combination():
+    '''Combining all three dataframes into a singular dataframe for further analysis'''
+    #extracting data with functions created above
     covid = extract_covid()
     jobkeeper = extract_jobkeeper()        
     postcode = extract_postcode()
-    
+    #converting postcode column to the same type for concatenation
     covid["postcode"] = covid["postcode"].astype(int)
     jobkeeper["postcode"] = jobkeeper["postcode"].astype(int)
     postcode["postcode"] = postcode["postcode"].astype(int)
-    
+    #using merge to combine all three dataframes by postcode
     com1 = pd.merge(postcode, covid, on='postcode')
     combination = pd.merge(com1, jobkeeper, on='postcode')
 
     return combination
 
-
+#Calling for function to start data wrangling
 x = combination()
 new  = pd.merge(x, land, left_on = 'postcode name', right_on= 'SUBURB')
 
