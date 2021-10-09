@@ -2,6 +2,7 @@
 # !pip install openpyxl
 # !pip install plotly
 # !pip install statsmodels
+# geopandas via anaconda
 
 #libraries
 import numpy as np
@@ -154,11 +155,11 @@ def combination():
     com1 = pd.merge(postcode, covid, on='postcode')
     combination = pd.merge(com1, jobkeeper, on='postcode')
     #sorting and collating the data by suburb
-    sorted_by_suburb = combination.groupby(['postcode name']).sum()
-    sorted_by_suburb['cases proportion'] = (sorted_by_suburb['cases']/sorted_by_suburb['population'])*100
-    sorted_by_suburb['application proportion'] = (sorted_by_suburb['application count']/sorted_by_suburb['population'])*100
+    #sorted_by_suburb = combination.groupby(['postcode name']).sum()
+    combination['cases proportion'] = (combination['cases']/combination['population'])*100
+    combination['application proportion'] = (combination['application count']/combination['population'])*100
 
-    return sorted_by_suburb
+    return combination
 
 #Calling for function to start data wrangling
 x = combination()
@@ -303,3 +304,20 @@ sns.scatterplot(x='postcode',y='Low and middle income tax offset\nno.',data=tax_
 plt.figure(figsize=(15,5))
 plt.grid(True)
 sns.scatterplot(x='postcode',y='Low income tax offset\n$',data=tax_x);
+
+def proportions_csv():
+    x2 = x.loc[:, ['postcode', 'postcode name', 'cases proportion', 'application proportion']]
+    x2.rename(columns = {'postcode': 'POSTCODE'}, inplace = True)
+    x2.replace([np.nan, np.inf, -np.inf], 0, inplace = True)
+    x2.to_csv(r'proportions.csv', index = False)
+    proportions = pd.read_csv('proportions.csv')
+    return proportions
+
+def shapefile_plot():
+    gdf = gpd.read_file('VicShapefile/POSTCODE_POLYGON.shp')
+    gdf.drop(columns = ['PFI', 'PFI_CR', 'UFI', 'UFI_CR', 'UFI_OLD'], inplace = True)
+    gdf.sort_values(by = 'POSTCODE', inplace = True)
+    gdf["POSTCODE"] = gdf["POSTCODE"].astype(int)
+    gdf = gdf.merge(proportions, on = 'POSTCODE')
+    gdf.plot("cases proportion", legend = True)
+    return
