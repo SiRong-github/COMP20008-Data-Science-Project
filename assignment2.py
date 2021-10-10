@@ -5,6 +5,7 @@
 # geopandas via anaconda
 
 #libraries
+import geopandas as gpd
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
@@ -313,11 +314,28 @@ def proportions_csv():
     proportions = pd.read_csv('proportions.csv')
     return proportions
 
-def shapefile_plot():
+def shapefile_plot_case_proportion():
+    proportions = proportions_csv()
     gdf = gpd.read_file('VicShapefile/POSTCODE_POLYGON.shp')
     gdf.drop(columns = ['PFI', 'PFI_CR', 'UFI', 'UFI_CR', 'UFI_OLD'], inplace = True)
     gdf.sort_values(by = 'POSTCODE', inplace = True)
     gdf["POSTCODE"] = gdf["POSTCODE"].astype(int)
     gdf = gdf.merge(proportions, on = 'POSTCODE')
+    gdf = gdf.sort_values(by='cases proportion', ascending=False)
+    gdf = gdf.iloc[1:]
     gdf.plot("cases proportion", legend = True)
+    plt.show()
+    return
+
+def shapefile_plot_application_proportion():
+    proportions = proportions_csv()
+    gdf = gpd.read_file('VicShapefile/POSTCODE_POLYGON.shp')
+    gdf.drop(columns = ['PFI', 'PFI_CR', 'UFI', 'UFI_CR', 'UFI_OLD'], inplace = True)
+    gdf.sort_values(by = 'POSTCODE', inplace = True)
+    gdf["POSTCODE"] = gdf["POSTCODE"].astype(int)
+    gdf = gdf.merge(proportions, on = 'POSTCODE')
+    gdf = gdf.sort_values(by='application proportion', ascending=False)
+    gdf = gdf.iloc[1:]
+    gdf.plot("application proportion", legend = True)
+    plt.show()
     return
