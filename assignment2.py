@@ -155,51 +155,108 @@ def combination():
     #using merge to combine all three dataframes by postcode number
     com1 = pd.merge(postcode, covid, on='postcode')
     combination = pd.merge(com1, jobkeeper, on='postcode')
-    #sorting and collating the data by suburb
-    #sorted_by_suburb = combination.groupby(['postcode name']).sum()
-    combination['cases proportion'] = (combination['cases']/combination['population'])*100
-    combination['application proportion'] = (combination['application count']/combination['population'])*100
 
     return combination
 
+#Calling for function to start initial data wrangling
+combination = combination()
+
+def sort_by_postcode():
+    y = combination
+    y['cases proportion'] = (y['cases']/y['population'])*100
+    y['application proportion'] = (y['application count']/y['population'])*100
+    
+    return y
+    
+def sort_by_suburb():
+    #sorting and collating the data by suburb
+    sorted_by_suburb = combination.groupby(['postcode name']).sum()
+    sorted_by_suburb['cases proportion'] = (sorted_by_suburb['cases']/sorted_by_suburb['population'])*100
+    sorted_by_suburb['application proportion'] = (sorted_by_suburb['application count']/sorted_by_suburb['population'])*100
+    
+    return sorted_by_suburb
+
 #Calling for function to start data wrangling
-x = combination()
+#sort_by_postal_code = sort_by_postcode()
+x = sort_by_postcode()
+sort_by_postal_name = sort_by_suburb()
+
 # new  = pd.merge(x, land, left_on = 'postcode name', right_on= 'SUBURB')
 
-def scatterplot():
+def scatterplot(data_used):
     plt.figure(figsize=(15,5))
     plt.grid(True)
-    sns.scatterplot(x='postcode name',y='cases proportion',data=x)
+    sns.scatterplot(x='postcode name', y='cases proportion', data=data_used)
     plt.setp(plt.xticks()[1], rotation=90)
 
     plt.figure(figsize=(15,5))
     plt.grid(True)
-    sns.scatterplot(x='postcode name',y='application proportion',data=x)
+    sns.scatterplot(x='postcode name', y='application proportion', data=data_used)
     plt.setp(plt.xticks()[1], rotation=90)
     
     plt.figure(figsize=(15,5))
     plt.grid(True)
-    sns.regplot(x='cases proportion',y='application proportion',data=x, robust=True);
+    sns.regplot(x='cases proportion', y='application proportion', data=data_used, robust=True);
     # weak increasing
     
     return None
 
-def regression_results():
+def regression_results(data_used):
     #OLS regression for cases and application proportion
-    cases_prop = x['cases proportion']
-    appli_prop = x['application proportion']
+    cases_prop = data_used['cases proportion']
+    appli_prop = data_used['application proportion']
     results = sm.OLS(appli_prop, cases_prop).fit()
     print("OLS Regression Results for Cases and Application proportion:")
     print(results.summary())
     
     #OLS regression for cases proportion and population
-    cases_prop = x['cases proportion']
-    population = x['population']
+    cases_prop = data_used['cases proportion']
+    population = data_used['population']
     results = sm.OLS(population, cases_prop).fit()
     print("\nOLS Regression Results for Cases proportion and population:")
     print(results.summary())
     
     return None
+
+#running scatterplots and regression
+scatterplot(sort_by_postal_name)
+regression_results(sort_by_postal_name)
+#scatterplot(sort_by_postal_code)
+#regression_results(sort_by_postal_code)
+
+def proportions_csv():
+    x2 = x.loc[:, ['postcode', 'postcode name', 'cases proportion', 'application proportion']]
+    x2.rename(columns = {'postcode': 'POSTCODE'}, inplace = True)
+    x2.replace([np.nan, np.inf, -np.inf], 0, inplace = True)
+    x2.to_csv(r'proportions.csv', index = False)
+    proportions = pd.read_csv('proportions.csv')
+    return proportions
+
+def shapefile_plot_case_proportion():
+    proportions = proportions_csv()
+    gdf = gpd.read_file('VicShapefile/POSTCODE_POLYGON.shp')
+    gdf.drop(columns = ['PFI', 'PFI_CR', 'UFI', 'UFI_CR', 'UFI_OLD'], inplace = True)
+    gdf.sort_values(by = 'POSTCODE', inplace = True)
+    gdf["POSTCODE"] = gdf["POSTCODE"].astype(int)
+    gdf = gdf.merge(proportions, on = 'POSTCODE')
+    gdf = gdf.sort_values(by='cases proportion', ascending=False)
+    gdf = gdf.iloc[1:]
+    gdf.plot("cases proportion", legend = True)
+    plt.show()
+    return
+
+def shapefile_plot_application_proportion():
+    proportions = proportions_csv()
+    gdf = gpd.read_file('VicShapefile/POSTCODE_POLYGON.shp')
+    gdf.drop(columns = ['PFI', 'PFI_CR', 'UFI', 'UFI_CR', 'UFI_OLD'], inplace = True)
+    gdf.sort_values(by = 'POSTCODE', inplace = True)
+    gdf["POSTCODE"] = gdf["POSTCODE"].astype(int)
+    gdf = gdf.merge(proportions, on = 'POSTCODE')
+    gdf = gdf.sort_values(by='application proportion', ascending=False)
+    gdf = gdf.iloc[1:]
+    gdf.plot("application proportion", legend = True)
+    plt.show()
+    return
 
 # plotly 
 fig = px.line(x, x='postcode', y='cases')
@@ -229,12 +286,12 @@ fig.update_layout(legend=dict(
 fig.show()
 
 
-x['prop'] = x['cases']/x['population']
-x_trans = x.groupby(['postcode name']).sum()
+#x['prop'] = x['cases']/x['population']
+#x_trans = x.groupby(['postcode name']).sum()
 #x_trans.to_csv('new.csv')
-x_new = pd.read_csv('new.csv')
-x_new['cases proportion'] = (x_new['cases']/x_new['population'])*100
-x_new['application proportion'] = (x_new['application count']/x_new['population'])*100
+#x_new = pd.read_csv('new.csv')
+#x_new['cases proportion'] = (x_new['cases']/x_new['population'])*100
+#x_new['application proportion'] = (x_new['application count']/x_new['population'])*100
 
 plt.figure(figsize=(15,5))
 plt.grid(True)
@@ -305,37 +362,3 @@ sns.scatterplot(x='postcode',y='Low and middle income tax offset\nno.',data=tax_
 plt.figure(figsize=(15,5))
 plt.grid(True)
 sns.scatterplot(x='postcode',y='Low income tax offset\n$',data=tax_x);
-
-def proportions_csv():
-    x2 = x.loc[:, ['postcode', 'postcode name', 'cases proportion', 'application proportion']]
-    x2.rename(columns = {'postcode': 'POSTCODE'}, inplace = True)
-    x2.replace([np.nan, np.inf, -np.inf], 0, inplace = True)
-    x2.to_csv(r'proportions.csv', index = False)
-    proportions = pd.read_csv('proportions.csv')
-    return proportions
-
-def shapefile_plot_case_proportion():
-    proportions = proportions_csv()
-    gdf = gpd.read_file('VicShapefile/POSTCODE_POLYGON.shp')
-    gdf.drop(columns = ['PFI', 'PFI_CR', 'UFI', 'UFI_CR', 'UFI_OLD'], inplace = True)
-    gdf.sort_values(by = 'POSTCODE', inplace = True)
-    gdf["POSTCODE"] = gdf["POSTCODE"].astype(int)
-    gdf = gdf.merge(proportions, on = 'POSTCODE')
-    gdf = gdf.sort_values(by='cases proportion', ascending=False)
-    gdf = gdf.iloc[1:]
-    gdf.plot("cases proportion", legend = True)
-    plt.show()
-    return
-
-def shapefile_plot_application_proportion():
-    proportions = proportions_csv()
-    gdf = gpd.read_file('VicShapefile/POSTCODE_POLYGON.shp')
-    gdf.drop(columns = ['PFI', 'PFI_CR', 'UFI', 'UFI_CR', 'UFI_OLD'], inplace = True)
-    gdf.sort_values(by = 'POSTCODE', inplace = True)
-    gdf["POSTCODE"] = gdf["POSTCODE"].astype(int)
-    gdf = gdf.merge(proportions, on = 'POSTCODE')
-    gdf = gdf.sort_values(by='application proportion', ascending=False)
-    gdf = gdf.iloc[1:]
-    gdf.plot("application proportion", legend = True)
-    plt.show()
-    return
