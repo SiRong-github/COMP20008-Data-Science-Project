@@ -155,6 +155,11 @@ def combination():
     #using merge to combine all three dataframes by postcode number
     com1 = pd.merge(postcode, covid, on='postcode')
     combination = pd.merge(com1, jobkeeper, on='postcode')
+    
+    for index, row in combination.iterrows():
+        if row['postcode'] == 3026:
+            combination = combination.drop([index, index + 1], axis=0)
+            break
 
     return combination
 
@@ -196,7 +201,7 @@ def scatterplot(data_used):
     
     plt.figure(figsize=(15,5))
     plt.grid(True)
-    sns.regplot(x='cases proportion', y='application proportion', data=data_used, robust=True);
+    sns.regplot(x='cases proportion', y='application proportion', data=data_used, robust=True)
     # weak increasing
     
     return None
@@ -239,8 +244,6 @@ def shapefile_plot_case_proportion():
     gdf.sort_values(by = 'POSTCODE', inplace = True)
     gdf["POSTCODE"] = gdf["POSTCODE"].astype(int)
     gdf = gdf.merge(proportions, on = 'POSTCODE')
-    gdf = gdf.sort_values(by='cases proportion', ascending=False)
-    gdf = gdf.iloc[1:]
     gdf.plot("cases proportion", legend = True)
     plt.show()
     return
@@ -252,8 +255,6 @@ def shapefile_plot_application_proportion():
     gdf.sort_values(by = 'POSTCODE', inplace = True)
     gdf["POSTCODE"] = gdf["POSTCODE"].astype(int)
     gdf = gdf.merge(proportions, on = 'POSTCODE')
-    gdf = gdf.sort_values(by='application proportion', ascending=False)
-    gdf = gdf.iloc[1:]
     gdf.plot("application proportion", legend = True)
     plt.show()
     return
@@ -283,7 +284,7 @@ fig.update_layout(legend=dict(
 ))
 
 # Show plot 
-fig.show()
+# fig.show()
 
 
 #x['prop'] = x['cases']/x['population']
@@ -293,72 +294,68 @@ fig.show()
 #x_new['cases proportion'] = (x_new['cases']/x_new['population'])*100
 #x_new['application proportion'] = (x_new['application count']/x_new['population'])*100
 
-plt.figure(figsize=(15,5))
-plt.grid(True)
-sns.scatterplot(x='postcode name',y='cases proportion',data=x_new)
-plt.setp(plt.xticks()[1], rotation=90)
+# plt.figure(figsize=(15,5))
+# plt.grid(True)
+# sns.scatterplot(x='postcode name',y='cases proportion',data=x_new)
+# plt.setp(plt.xticks()[1], rotation=90)
 
-plt.figure(figsize=(15,5))
-plt.grid(True)
-sns.scatterplot(x='postcode name',y='application proportion',data=x_new)
-plt.setp(plt.xticks()[1], rotation=90)
+# plt.figure(figsize=(15,5))
+# plt.grid(True)
+# sns.scatterplot(x='postcode name',y='application proportion',data=x_new)
+# plt.setp(plt.xticks()[1], rotation=90)
 
-plt.figure(figsize=(15,5))
-plt.grid(True)
-sns.scatterplot(x='postcode',y='application count',data=x);
+# plt.figure(figsize=(15,5))
+# plt.grid(True)
+# sns.scatterplot(x='postcode',y='application count',data=x)
 
-plt.figure(figsize=(15,5))
-plt.grid(True)
-sns.scatterplot(x='postcode',y='population',data=x);
+# plt.figure(figsize=(15,5))
+# plt.grid(True)
+# sns.scatterplot(x='postcode',y='population',data=x)
 
-plt.figure(figsize=(15,5))
-plt.grid(True)
-sns.scatterplot(x='postcode',y='cases',data=x);
+# plt.figure(figsize=(15,5))
+# plt.grid(True)
+# sns.scatterplot(x='postcode',y='cases',data=x)
 
-x_new.describe()
+# x_new.describe()
 
-tax_data = pd.read_excel('ts19individual06taxablestatusstateterritorypostcode.xlsx', sheet_name = 'Table 6B')
-tax_x = pd.merge(x, tax_data, left_on='postcode', right_on='Postcode')
+def tax_data_stuff():
+    tax_data = pd.read_excel('ts19individual06taxablestatusstateterritorypostcode.xlsx', sheet_name = 'Table 6B')
+    tax_x = pd.merge(x, tax_data, left_on='postcode', right_on='Postcode')
 
-plt.figure(figsize=(30,10))
-sns.heatmap(tax_x.corr())
+    plt.figure(figsize=(30,10))
+    sns.heatmap(tax_x.corr())
 
-# plotly 
-fig = px.line(tax_x, x='postcode', y='Number of individuals\nno.')
+    # plotly 
+    fig = px.line(tax_x, x='postcode', y='Number of individuals\nno.')
 
-fig.update_layout(legend=dict(
-    yanchor="top",
-    y=1.12,
-    xanchor="right",
-    x=1.00
-))
+    fig.update_layout(legend=dict(
+        yanchor="top",
+        y=1.12,
+        xanchor="right",
+        x=1.00
+    ))
 
-# Show plot 
-fig.show()
+    # Show plot 
+    fig.show()
 
+    plt.figure(figsize=(15,5))
+    plt.grid(True)
+    sns.scatterplot(x='postcode',y='Number of individuals\nno.',data=tax_x)
 
-plt.figure(figsize=(15,5))
-plt.grid(True)
-sns.scatterplot(x='postcode',y='Number of individuals\nno.',data=tax_x);
-
-plt.figure(figsize=(15,5))
-plt.grid(True)
-sns.scatterplot(x='postcode',y='People with private health insurance\nno.',data=tax_x);
-
-plt.figure(figsize=(15,5))
-plt.grid(True)
-sns.scatterplot(x='postcode',y='Number of individuals\nno.',data=tax_x);
+    plt.figure(figsize=(15,5))
+    plt.grid(True)
+    sns.scatterplot(x='postcode',y='People with private health insurance\nno.',data=tax_x)
 
 
-plt.figure(figsize=(15,5))
-plt.grid(True)
-sns.scatterplot(x='postcode',y='Private health insurance - your Australian Government rebate received\nno.',data=tax_x);
+    plt.figure(figsize=(15,5))
+    plt.grid(True)
+    sns.scatterplot(x='postcode',y='Private health insurance - your Australian Government rebate received\nno.',data=tax_x)
 
 
-plt.figure(figsize=(15,5))
-plt.grid(True)
-sns.scatterplot(x='postcode',y='Low and middle income tax offset\nno.',data=tax_x);
+    plt.figure(figsize=(15,5))
+    plt.grid(True)
+    sns.scatterplot(x='postcode',y='Low and middle income tax offset\nno.',data=tax_x)
 
-plt.figure(figsize=(15,5))
-plt.grid(True)
-sns.scatterplot(x='postcode',y='Low income tax offset\n$',data=tax_x);
+    plt.figure(figsize=(15,5))
+    plt.grid(True)
+    sns.scatterplot(x='postcode',y='Low income tax offset\n$',data=tax_x)
