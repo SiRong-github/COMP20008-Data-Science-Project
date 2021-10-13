@@ -216,10 +216,10 @@ def descriptive_statistics():
     return 
 
 def proportions_csv():
-    x2 = x.loc[:, ['postcode', 'postcode name', 'cases proportion', 'application proportion']]
-    x2.rename(columns = {'postcode': 'POSTCODE'}, inplace = True)
-    x2.replace([np.nan, np.inf, -np.inf], 0, inplace = True)
-    x2.to_csv(r'proportions.csv', index = False)
+    temp = sort_by_postal_code.loc[:, ['postcode', 'postcode name', 'cases proportion', 'application proportion']]
+    temp.rename(columns = {'postcode': 'POSTCODE'}, inplace = True)
+    temp.replace([np.nan, np.inf, -np.inf], 0, inplace = True)
+    temp.to_csv(r'proportions.csv', index = False)
     proportions = pd.read_csv('proportions.csv')
     return proportions
 
@@ -256,8 +256,7 @@ def shapefile_plot_application_proportion():
     return 
 
 #Calling for function to start data wrangling
-#sort_by_postal_code = sort_by_postcode()
-x = sort_by_postcode()
+sort_by_postal_code = sort_by_postcode()
 sort_by_postal_name = sort_by_suburb()
 
 #Calling for function to start initial data wrangling
