@@ -190,24 +190,13 @@ x = sort_by_postcode()
 sort_by_postal_name = sort_by_suburb()
 
 def scatterplot():
-    '''Plotting scatterplot of data_used for cases and application proportion'''
-    plt.figure(figsize=(15,5))
-    plt.grid(True)
-    sns.scatterplot(x='postcode name', y='cases proportion', data=x)
-    plt.setp(plt.xticks()[1], rotation=90)
-    plt.savefig("scatterplot_cases_proportion.png")
-
-    plt.figure(figsize=(15,5))
-    plt.grid(True)
-    sns.scatterplot(x='postcode name', y='application proportion', data=x)
-    plt.setp(plt.xticks()[1], rotation=90)
-    plt.savefig("scatterplot_application_proportion.png")
+    '''Plotting scatterplot for cases and application proportion'''
     
     plt.figure(figsize=(15,5))
     plt.grid(True)
     sns.regplot(x='application proportion', y='cases proportion', data=sort_by_postal_name, robust=True)
+    plt.title('Scatterplot of application and cases proportion')
     plt.savefig("scatterplot_cases_and_application.png")
-    # weak increasing
     
     return
 
@@ -234,7 +223,7 @@ def descriptive_statistics():
     print(correlation)
     return 
 
-#running scatterplots and regression
+#running scatterplots, regression and descriptive statistics
 scatterplot()
 regression_results(sort_by_postal_name)
 descriptive_statistics()
