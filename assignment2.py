@@ -255,12 +255,12 @@ def shapefile_plot_application_proportion():
     plt.savefig("shapefile_plot_application_proportion.png")
     return 
 
+#Calling for function to start initial data wrangling
+combination = combination()
+
 #Calling for function to start data wrangling
 sort_by_postal_code = sort_by_postcode()
 sort_by_postal_name = sort_by_suburb()
-
-#Calling for function to start initial data wrangling
-combination = combination()
 
 #running scatterplots, regression and descriptive statistics
 scatterplot()
