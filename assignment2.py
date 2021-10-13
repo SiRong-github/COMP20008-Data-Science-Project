@@ -156,6 +156,7 @@ def combination():
     com1 = pd.merge(postcode, covid, on='postcode')
     combination = pd.merge(com1, jobkeeper, on='postcode')
     
+    #deleting an outlier
     for index, row in combination.iterrows():
         if row['postcode'] == 3026:
             combination = combination.drop([index, index + 1], axis=0)
@@ -168,11 +169,11 @@ combination = combination()
 
 def sort_by_postcode():
     '''Sorting combination by postcode number and calculating cases and application proportion'''
-    y = combination
-    y['cases proportion'] = (y['cases']/y['population'])*100
-    y['application proportion'] = (y['application count']/y['population'])*100
+    combi = combination
+    combi['cases proportion'] = (combi['cases']/combi['population'])*100
+    combi['application proportion'] = (combi['application count']/combi['population'])*100
     
-    return y
+    return combi
     
 def sort_by_suburb():
     '''Sorting combination by postcode name and calculating cases and application proportion'''
@@ -190,21 +191,24 @@ sort_by_postal_name = sort_by_suburb()
 
 # new  = pd.merge(x, land, left_on = 'postcode name', right_on= 'SUBURB')
 
-def scatterplot(data_used):
+def scatterplot():
     '''Plotting scatterplot of data_used for cases and application proportion'''
     plt.figure(figsize=(15,5))
     plt.grid(True)
-    sns.scatterplot(x='postcode name', y='cases proportion', data=data_used)
+    sns.scatterplot(x='postcode name', y='cases proportion', data=x)
     plt.setp(plt.xticks()[1], rotation=90)
+    plt.savefig("scatterplot_cases_proportion.png")
 
     plt.figure(figsize=(15,5))
     plt.grid(True)
-    sns.scatterplot(x='postcode name', y='application proportion', data=data_used)
+    sns.scatterplot(x='postcode name', y='application proportion', data=x)
     plt.setp(plt.xticks()[1], rotation=90)
+    plt.savefig("scatterplot_application_proportion.png")
     
     plt.figure(figsize=(15,5))
     plt.grid(True)
-    sns.regplot(x='cases proportion', y='application proportion', data=data_used, robust=True)
+    sns.regplot(x='application proportion', y='cases proportion', data=sort_by_postal_name, robust=True)
+    plt.savefig("scatterplot_cases_and_application.png")
     # weak increasing
     
     return
@@ -218,20 +222,11 @@ def regression_results(data_used):
     print("OLS Regression Results for Cases and Application proportion:")
     print(results.summary())
     
-    #OLS regression for cases proportion and population
-    cases_prop = data_used['cases proportion']
-    population = data_used['population']
-    results = sm.OLS(population, cases_prop).fit()
-    print("\nOLS Regression Results for Cases proportion and population:")
-    print(results.summary())
-    
     return
 
 #running scatterplots and regression
-scatterplot(sort_by_postal_name)
-regression_results(sort_by_postal_name)
-#scatterplot(sort_by_postal_code)
-#regression_results(sort_by_postal_code)
+scatterplot()
+regression_results()
 
 def proportions_csv():
     x2 = x.loc[:, ['postcode', 'postcode name', 'cases proportion', 'application proportion']]
