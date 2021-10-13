@@ -250,6 +250,11 @@ def shapefile_plot_case_proportion():
     gdf["POSTCODE"] = gdf["POSTCODE"].astype(int)
     gdf = gdf.merge(proportions, on = 'POSTCODE')
     gdf.plot("cases proportion", legend = True)
+    plt.xlabel("x")
+    plt.ylabel("y")
+    plt.title("Shapefile Plot for Case Proportion")    
+    plt.tight_layout()
+    plt.savefig("shapefile_plot_case_proportion.png")
     plt.show()
     return
 
@@ -262,6 +267,11 @@ def shapefile_plot_application_proportion():
     gdf["POSTCODE"] = gdf["POSTCODE"].astype(int)
     gdf = gdf.merge(proportions, on = 'POSTCODE')
     gdf.plot("application proportion", legend = True)
+    plt.xlabel("x")
+    plt.ylabel("y")
+    plt.title("Shapefile Plot for Application Proportion")    
+    plt.tight_layout()
+    plt.savefig("shapefile_plot_application_proportion.png")
     plt.show()
     return 
 
