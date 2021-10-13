@@ -189,8 +189,6 @@ def sort_by_suburb():
 x = sort_by_postcode()
 sort_by_postal_name = sort_by_suburb()
 
-# new  = pd.merge(x, land, left_on = 'postcode name', right_on= 'SUBURB')
-
 def scatterplot():
     '''Plotting scatterplot of data_used for cases and application proportion'''
     plt.figure(figsize=(15,5))
@@ -224,9 +222,22 @@ def regression_results(data_used):
     
     return
 
+def descriptive_statistics():
+    '''Returning descriptive statistics and correlation of dataframe grouped by suburbs'''
+    desc_stat = sort_by_postal_name.describe
+    correlation = sort_by_postal_name.corr()
+    #printing results
+    print("Descriptive statistics of dataframe sort_by_postal_name:")
+    print(desc_stat)
+    
+    print("Correlation in dataframe sort_by_postal_name:")
+    print(correlation)
+    return 
+
 #running scatterplots and regression
-# scatterplot()
-# regression_results()
+scatterplot()
+regression_results(sort_by_postal_name)
+descriptive_statistics()
 
 def proportions_csv():
     x2 = x.loc[:, ['postcode', 'postcode name', 'cases proportion', 'application proportion']]
