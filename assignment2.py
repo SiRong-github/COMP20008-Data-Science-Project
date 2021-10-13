@@ -167,6 +167,7 @@ def combination():
 combination = combination()
 
 def sort_by_postcode():
+    '''Sorting combination by postcode number and calculating cases and application proportion'''
     y = combination
     y['cases proportion'] = (y['cases']/y['population'])*100
     y['application proportion'] = (y['application count']/y['population'])*100
@@ -174,6 +175,7 @@ def sort_by_postcode():
     return y
     
 def sort_by_suburb():
+    '''Sorting combination by postcode name and calculating cases and application proportion'''
     #sorting and collating the data by suburb
     sorted_by_suburb = combination.groupby(['postcode name']).sum()
     sorted_by_suburb['cases proportion'] = (sorted_by_suburb['cases']/sorted_by_suburb['population'])*100
@@ -189,6 +191,7 @@ sort_by_postal_name = sort_by_suburb()
 # new  = pd.merge(x, land, left_on = 'postcode name', right_on= 'SUBURB')
 
 def scatterplot(data_used):
+    '''Plotting scatterplot of data_used for cases and application proportion'''
     plt.figure(figsize=(15,5))
     plt.grid(True)
     sns.scatterplot(x='postcode name', y='cases proportion', data=data_used)
@@ -204,9 +207,10 @@ def scatterplot(data_used):
     sns.regplot(x='cases proportion', y='application proportion', data=data_used, robust=True)
     # weak increasing
     
-    return None
+    return
 
 def regression_results(data_used):
+    '''Regression analysis of data_used for cases and application proportion'''
     #OLS regression for cases and application proportion
     cases_prop = data_used['cases proportion']
     appli_prop = data_used['application proportion']
@@ -221,7 +225,7 @@ def regression_results(data_used):
     print("\nOLS Regression Results for Cases proportion and population:")
     print(results.summary())
     
-    return None
+    return
 
 #running scatterplots and regression
 scatterplot(sort_by_postal_name)
@@ -238,6 +242,7 @@ def proportions_csv():
     return proportions
 
 def shapefile_plot_case_proportion():
+    '''Plotting geospatial data for cases proportion'''
     proportions = proportions_csv()
     gdf = gpd.read_file('VicShapefile/POSTCODE_POLYGON.shp')
     gdf.drop(columns = ['PFI', 'PFI_CR', 'UFI', 'UFI_CR', 'UFI_OLD'], inplace = True)
@@ -249,6 +254,7 @@ def shapefile_plot_case_proportion():
     return
 
 def shapefile_plot_application_proportion():
+    '''Plotting geospatial data for application proportion'''
     proportions = proportions_csv()
     gdf = gpd.read_file('VicShapefile/POSTCODE_POLYGON.shp')
     gdf.drop(columns = ['PFI', 'PFI_CR', 'UFI', 'UFI_CR', 'UFI_OLD'], inplace = True)
@@ -257,7 +263,7 @@ def shapefile_plot_application_proportion():
     gdf = gdf.merge(proportions, on = 'POSTCODE')
     gdf.plot("application proportion", legend = True)
     plt.show()
-    return
+    return 
 
 # plotly 
 fig = px.line(x, x='postcode', y='cases')
@@ -359,3 +365,4 @@ def tax_data_stuff():
     plt.figure(figsize=(15,5))
     plt.grid(True)
     sns.scatterplot(x='postcode',y='Low income tax offset\n$',data=tax_x)
+    return
