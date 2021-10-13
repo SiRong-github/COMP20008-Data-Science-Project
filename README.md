@@ -1,10 +1,12 @@
 # assignment-2-comp20008-assignment-2-group-2
 assignment-2-comp20008-assignment-2-group-2 created by GitHub Classroom
 
-Quoc Anh Do 1140730
+1140730 Quoc Anh Do
 
-Tugsgerel Lkhagvasuren 1088199
+1088199 Tugsgerel Lkhagvasuren
 
-Ng Xin Yi Sherie 1101553
+1101553 Ng Xin Yi Sherie
 
-Shanaia Chen 1214289
+1214289 Shanaia Chen
+
+Please run: assignment2.py
