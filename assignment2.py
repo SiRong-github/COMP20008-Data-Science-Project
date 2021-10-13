@@ -249,7 +249,7 @@ def shapefile_plot_case_proportion():
     gdf.plot("cases proportion", legend = True)
     plt.xlabel("x")
     plt.ylabel("y")
-    plt.title("Shapefile Plot for Case Proportion")    
+    plt.title("Shapefile Plot for Case Proportion")
     plt.tight_layout()
     plt.savefig("shapefile_plot_case_proportion.png")
     return
