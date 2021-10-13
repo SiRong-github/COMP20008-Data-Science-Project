@@ -225,8 +225,8 @@ def regression_results(data_used):
     return
 
 #running scatterplots and regression
-scatterplot()
-regression_results()
+# scatterplot()
+# regression_results()
 
 def proportions_csv():
     x2 = x.loc[:, ['postcode', 'postcode name', 'cases proportion', 'application proportion']]
@@ -250,7 +250,6 @@ def shapefile_plot_case_proportion():
     plt.title("Shapefile Plot for Case Proportion")    
     plt.tight_layout()
     plt.savefig("shapefile_plot_case_proportion.png")
-    plt.show()
     return
 
 def shapefile_plot_application_proportion():
@@ -267,7 +266,6 @@ def shapefile_plot_application_proportion():
     plt.title("Shapefile Plot for Application Proportion")    
     plt.tight_layout()
     plt.savefig("shapefile_plot_application_proportion.png")
-    plt.show()
     return 
 
 # plotly 
@@ -371,3 +369,6 @@ def tax_data_stuff():
     plt.grid(True)
     sns.scatterplot(x='postcode',y='Low income tax offset\n$',data=tax_x)
     return
+
+shapefile_plot_case_proportion()
+shapefile_plot_application_proportion()
