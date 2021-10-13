@@ -164,9 +164,6 @@ def combination():
 
     return combination
 
-#Calling for function to start initial data wrangling
-combination = combination()
-
 def sort_by_postcode():
     '''Sorting combination by postcode number and calculating cases and application proportion'''
     combi = combination
@@ -183,11 +180,6 @@ def sort_by_suburb():
     sorted_by_suburb['application proportion'] = (sorted_by_suburb['application count']/sorted_by_suburb['population'])*100
     
     return sorted_by_suburb
-
-#Calling for function to start data wrangling
-#sort_by_postal_code = sort_by_postcode()
-x = sort_by_postcode()
-sort_by_postal_name = sort_by_suburb()
 
 def scatterplot():
     '''Plotting scatterplot for cases and application proportion'''
@@ -222,11 +214,6 @@ def descriptive_statistics():
     print("Correlation in dataframe sort_by_postal_name:")
     print(correlation)
     return 
-
-#running scatterplots, regression and descriptive statistics
-scatterplot()
-regression_results(sort_by_postal_name)
-descriptive_statistics()
 
 def proportions_csv():
     x2 = x.loc[:, ['postcode', 'postcode name', 'cases proportion', 'application proportion']]
@@ -268,5 +255,19 @@ def shapefile_plot_application_proportion():
     plt.savefig("shapefile_plot_application_proportion.png")
     return 
 
+#Calling for function to start data wrangling
+#sort_by_postal_code = sort_by_postcode()
+x = sort_by_postcode()
+sort_by_postal_name = sort_by_suburb()
+
+#Calling for function to start initial data wrangling
+combination = combination()
+
+#running scatterplots, regression and descriptive statistics
+scatterplot()
+regression_results(sort_by_postal_name)
+descriptive_statistics()
+
+#creating shapefiles for case and application proportions
 shapefile_plot_case_proportion()
 shapefile_plot_application_proportion()
