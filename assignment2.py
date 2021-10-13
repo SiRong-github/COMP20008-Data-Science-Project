@@ -142,7 +142,7 @@ def extract_postcode():
     
     return postcode_with_name_data
   
-def combination():
+def combination(outlier):
     '''Combining all three dataframes into a singular dataframe for further analysis'''
     #extracting data with functions created above
     covid = extract_covid()
@@ -156,11 +156,12 @@ def combination():
     com1 = pd.merge(postcode, covid, on='postcode')
     combination = pd.merge(com1, jobkeeper, on='postcode')
     
-    #deleting an outlier
-    for index, row in combination.iterrows():
-        if row['postcode'] == 3026:
-            combination = combination.drop([index, index + 1], axis=0)
-            break
+    if outlier == 1:
+        #deleting an outlier
+        for index, row in combination.iterrows():
+            if row['postcode'] == 3026:
+                combination = combination.drop([index, index + 1], axis=0)
+                break
 
     return combination
 
@@ -181,6 +182,7 @@ def sort_by_suburb():
     
     return sorted_by_suburb
 
+
 def scatterplot():
     '''Plotting scatterplot for cases and application proportion'''
     
@@ -189,6 +191,19 @@ def scatterplot():
     sns.regplot(x='application proportion', y='cases proportion', data=sort_by_postal_name, robust=True)
     plt.title('Scatterplot of application and cases proportion')
     plt.savefig("scatterplot_cases_and_application.png")
+    
+    return
+
+def application_vs_cases():
+    '''Plotting scatterplot for cases and application proportion'''
+    combination_with_outlier['cases proportion'] = (combination_with_outlier['cases']/combination_with_outlier['population'])*100
+    combination_with_outlier['application proportion'] = (combination_with_outlier['application count']/combination_with_outlier['population'])*100
+    combination_with_outlier.replace([np.nan, np.inf, -np.inf], 0, inplace = True)
+    plt.figure(figsize=(15,5))
+    plt.grid(True)
+    sns.regplot(x='application proportion', y='cases proportion', data=combination_with_outlier, robust=True)
+    plt.title('Scatterplot of application and cases proportion')
+    plt.savefig("scatterplot_cases_and_application_with_outlier.png")
     
     return
 
@@ -256,13 +271,15 @@ def shapefile_plot_application_proportion():
     return 
 
 #Calling for function to start initial data wrangling
-combination = combination()
+combination_with_outlier = combination(0)
+combination = combination(1)
 
 #Calling for function to start data wrangling
 sort_by_postal_code = sort_by_postcode()
 sort_by_postal_name = sort_by_suburb()
 
 #running scatterplots, regression and descriptive statistics
+application_vs_cases()
 scatterplot()
 regression_results(sort_by_postal_name)
 descriptive_statistics()
