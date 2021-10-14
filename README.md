@@ -10,3 +10,4 @@ assignment-2-comp20008-assignment-2-group-2 created by GitHub Classroom
 1214289 Shanaia Chen
 
 Please run: assignment2.py
+Report: Final_Report.docx
