@@ -199,9 +199,10 @@ def application_vs_cases():
     combination_with_outlier['cases proportion'] = (combination_with_outlier['cases']/combination_with_outlier['population'])*100
     combination_with_outlier['application proportion'] = (combination_with_outlier['application count']/combination_with_outlier['population'])*100
     combination_with_outlier.replace([np.nan, np.inf, -np.inf], 0, inplace = True)
+    print(combination_with_outlier)
     plt.figure(figsize=(15,5))
     plt.grid(True)
-    sns.regplot(x='application proportion', y='cases proportion', data=combination_with_outlier, robust=True)
+    sns.regplot(x='cases proportion', y='application proportion', data=combination_with_outlier, robust=True)
     plt.title('Scatterplot of application and cases proportion')
     plt.savefig("scatterplot_cases_and_application_with_outlier.png")
     
@@ -220,8 +221,10 @@ def regression_results(data_used):
 
 def descriptive_statistics():
     '''Returning descriptive statistics and correlation of dataframe grouped by suburbs'''
+    print("Descriptive statistics of data with outlier")
+    print(combination.describe())
     desc_stat = sort_by_postal_name.describe
-    correlation = sort_by_postal_name.corr()
+    correlation = combination.corr()
     #printing results
     print("Descriptive statistics of dataframe sort_by_postal_name:")
     print(desc_stat)
