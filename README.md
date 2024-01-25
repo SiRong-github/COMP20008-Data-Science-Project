@@ -1,5 +1,5 @@
 # Subject
-This Data Science research project was done in a group of 4 for COMP20008 Elements of Data Processing
+This Data Science research project was done in a group of 4 for COMP20008 Elements of Data Processing of the University of Melbourne.
 
 # What to Run
 assignment2.py
