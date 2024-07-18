@@ -1,7 +1,7 @@
 # Subject
 This Data Science research project was done in a group of 4 for COMP20008 Elements of Data Processing of the University of Melbourne.
 
-# Downloadable Pdfs
+# Pdf Documents
 [Project Proposal](https://github.com/SiRong-github/COMP20008-Data-Science-Project/blob/main/documents/Project%20Proposal.pdf)
 
 [Research Report](https://github.com/SiRong-github/COMP20008-Data-Science-Project/blob/main/documents/FINAL%20Report.pdf)
